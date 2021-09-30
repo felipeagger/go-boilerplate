@@ -1,0 +1,80 @@
+basePath: /auth
+definitions:
+  domain.Signup:
+    properties:
+      birthDate:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is Example API in Go.
+  title: Go Boilerplate API
+  version: "1.0"
+paths:
+  /health-check:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Return status of service
+      tags:
+      - General
+  /v1:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint to register user
+      parameters:
+      - description: Client identifier
+        in: header
+        name: X-Client-Id
+        required: true
+        type: string
+      - description: Auth Token
+        in: header
+        name: X-Authorization
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Signup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Signup'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Endpoint to signup user
+      tags:
+      - Register
+schemes:
+- http
+swagger: "2.0"
+x-extension-openapi:
+  example: value on a json format
