@@ -8,6 +8,7 @@ import (
 
 type UserRepository interface {
 	Get(ctx context.Context, id int64) domain.User
+	GetByEmail(ctx context.Context, email string) domain.User
 	Create(ctx context.Context, user domain.User) error
 	Update(ctx context.Context, user domain.User) error
 	Delete(ctx context.Context, user domain.User) error

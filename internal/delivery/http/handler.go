@@ -81,13 +81,18 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	var payload domain.Signup
+	var payload domain.Login
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, "Ok")
+	response, err := controller.SignInUser(c, payload)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // Update godoc

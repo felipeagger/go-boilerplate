@@ -25,6 +25,12 @@ func (u *User) Get(ctx context.Context, id int64) (user domain.User) {
 	return
 }
 
+//GetByEmail return a user filtered by email
+func (u *User) GetByEmail(ctx context.Context, email string) (user domain.User) {
+	u.DB.First(&user, "email = ?", email)
+	return
+}
+
 // Create a user
 func (u *User) Create(ctx context.Context, user domain.User) error {
 	result := u.DB.Create(&user)
