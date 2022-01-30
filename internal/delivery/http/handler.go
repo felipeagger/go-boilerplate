@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 
+	"github.com/felipeagger/go-boilerplate/internal/controller"
 	"github.com/felipeagger/go-boilerplate/internal/domain"
 	"github.com/gin-gonic/gin"
 )
@@ -53,7 +54,12 @@ func (h *Handler) Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, "Ok")
+	err := controller.CreateUser(c, payload)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"msg": "Created"})
 }
 
 // Login godoc

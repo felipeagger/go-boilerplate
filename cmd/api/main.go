@@ -20,7 +20,6 @@ import (
 
 	"github.com/felipeagger/go-boilerplate/internal/config"
 	httpd "github.com/felipeagger/go-boilerplate/internal/delivery/http"
-	"github.com/felipeagger/go-boilerplate/pkg/trace"
 	"github.com/felipeagger/go-boilerplate/pkg/utils"
 
 	_ "github.com/felipeagger/go-boilerplate/docs"
@@ -37,9 +36,6 @@ import (
 
 // @x-extension-openapi {"example": "value on a json format"}
 
-func init() {
-}
-
 func main() {
 	ctx := context.Background()
 
@@ -47,19 +43,19 @@ func main() {
 	log.SetFormatter(&logrus.JSONFormatter{})
 
 	// Bootstrap tracer.
-	prv, err := trace.NewProvider(trace.ProviderConfig{
-		JaegerEndpoint: fmt.Sprintf("http://%s/api/traces", config.GetEnv().TraceHost),
-		ServiceName:    "client",
-		ServiceVersion: "1.0.0",
-		Environment:    "dev",
-		Disabled:       false,
-	})
+	//prv, err := trace.NewProvider(trace.ProviderConfig{
+	//	JaegerEndpoint: fmt.Sprintf("http://%s/api/traces", config.GetEnv().TraceHost),
+	//	ServiceName:    "client",
+	//	ServiceVersion: "1.0.0",
+	//	Environment:    "dev",
+	//	Disabled:       false,
+	//})
 
-	if err != nil {
-		log.Fatalln(err)
-	}
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
 
-	defer prv.Close(ctx)
+	//defer prv.Close(ctx)
 
 	engine := gin.New()
 	engine.Use(cors.Default(),

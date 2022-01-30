@@ -18,6 +18,6 @@ func init() {
 
 }
 
-func generatedID() int64 {
+func GeneratedID() int64 {
 	return snowflk.Generate().Int64()
 }
