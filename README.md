@@ -52,6 +52,7 @@ make test
     - _**controller**_: onde fica as regras/logicas
     - _**delivery**_: delivery layer -> http, grpc, messaging
     - _**domain**_: models / structs
+    - _**repository**_: operacoes com storage/interface com banco
     - _**service**_: external services call's
 - _**pkg**_: public packages
 - _**docs**_: Swagger Documentation

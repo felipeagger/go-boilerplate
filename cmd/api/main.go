@@ -4,18 +4,19 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/gzip"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/swaggo/files"       // swagger embed files
-	"github.com/swaggo/gin-swagger" // gin-swagger middleware
+	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/gzip"
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+
+	swaggerFiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 
 	"github.com/felipeagger/go-boilerplate/internal/config"
 	httpd "github.com/felipeagger/go-boilerplate/internal/delivery/http"
@@ -35,13 +36,26 @@ import (
 
 // @x-extension-openapi {"example": "value on a json format"}
 
-func init() {
-}
-
 func main() {
+	ctx := context.Background()
 
 	log := logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{})
+
+	// Bootstrap tracer.
+	//prv, err := trace.NewProvider(trace.ProviderConfig{
+	//	JaegerEndpoint: fmt.Sprintf("http://%s/api/traces", config.GetEnv().TraceHost),
+	//	ServiceName:    "client",
+	//	ServiceVersion: "1.0.0",
+	//	Environment:    "dev",
+	//	Disabled:       false,
+	//})
+
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+
+	//defer prv.Close(ctx)
 
 	engine := gin.New()
 	engine.Use(cors.Default(),
