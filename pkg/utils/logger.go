@@ -2,11 +2,12 @@ package utils
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 type LoggerInterface interface {
@@ -30,7 +31,6 @@ func (l *Logger) Error(i ...interface{}) {
 	log.Printf("[ERROR] %s", fmt.Sprintln(i...))
 }
 
-
 // Logger is the logrus logger handler
 func LogMiddleware(logger logrus.FieldLogger) gin.HandlerFunc {
 
@@ -43,40 +43,37 @@ func LogMiddleware(logger logrus.FieldLogger) gin.HandlerFunc {
 
 			entry := logger.WithFields(logrus.Fields{
 				"log_version": "1.0",
-				"request_id":"undefined",
-				"date_time": time.Now(),
+				"request_id":  "undefined",
+				"date_time":   time.Now(),
 				"product": map[string]interface{}{
-					"name": "serasa-lno",
-					"application":"ecs-lno-make-deals",
-					"version": "0.0.1",
-					"channel": c.GetHeader("X-LNO-Client-Id"),
+					"name":        "go-boilerplate",
+					"application": "go-boilerplate",
+					"version":     "0.0.1",
+					"channel":     c.GetHeader("X-Client-Id"),
 					"http": map[string]string{
 						"method": c.Request.Method,
-						"path": c.Request.URL.Path,
+						"path":   c.Request.URL.Path,
 					},
 				},
 				"user": map[string]string{
-					"uuid": c.GetHeader("userId"),
+					"uuid":  c.GetHeader("userId"),
 					"token": c.GetHeader("x-bifrost-authorization"),
-					"cpf": "",
-					"consumer_id": "",
-					"subscription_code": "",
 				},
 				"origin": map[string]interface{}{
-					"client": c.GetHeader("X-LNO-Client-Id"),
-					"application": "ecs-lno-make-deals",
-					"ip": c.ClientIP(),
-					"headers":map[string]string{
+					"client":      c.GetHeader("X-Client-Id"),
+					"application": "go-boilerplate",
+					"ip":          c.ClientIP(),
+					"headers": map[string]string{
 						"user_agent": c.Request.UserAgent(),
-						"origin": c.GetHeader("Origin"),
-						"referer": c.Request.Referer(),
+						"origin":     c.GetHeader("Origin"),
+						"referer":    c.Request.Referer(),
 					},
 				},
 				"context": map[string]interface{}{
-					"service":"",
+					"service":     "",
 					"status_code": c.Writer.Status(),
-					"data":map[string]string{
-						"message":"",
+					"data": map[string]string{
+						"message": "",
 						"content": "",
 					},
 				},

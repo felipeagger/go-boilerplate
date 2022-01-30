@@ -35,9 +35,9 @@
                 }
             }
         },
-        "/v1": {
-            "post": {
-                "description": "Endpoint to register user",
+        "/user/v1/:userID": {
+            "put": {
+                "description": "Endpoint to update user",
                 "consumes": [
                     "application/json"
                 ],
@@ -45,9 +45,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Register"
+                    "Update"
                 ],
-                "summary": "Endpoint to signup user",
+                "summary": "Endpoint to update user",
                 "parameters": [
                     {
                         "type": "string",
@@ -85,12 +85,138 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/v1/login": {
+            "post": {
+                "description": "Endpoint to login user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Login"
+                ],
+                "summary": "Endpoint to login user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client identifier",
+                        "name": "X-Client-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Payload",
+                        "name": "Payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.LoginResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/domain.LoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/v1/register": {
+            "post": {
+                "description": "Endpoint to register user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Register"
+                ],
+                "summary": "Endpoint to signup user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client identifier",
+                        "name": "X-Client-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Payload",
+                        "name": "Payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Signup"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Signup"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
         }
     },
     "definitions": {
+        "domain.Login": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.Signup": {
             "type": "object",
             "required": [

@@ -1,5 +1,22 @@
 basePath: /auth
 definitions:
+  domain.Login:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  domain.LoginResponse:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+    type: object
   domain.Signup:
     properties:
       birthDate:
@@ -37,11 +54,11 @@ paths:
       summary: Return status of service
       tags:
       - General
-  /v1:
-    post:
+  /user/v1/:userID:
+    put:
       consumes:
       - application/json
-      description: Endpoint to register user
+      description: Endpoint to update user
       parameters:
       - description: Client identifier
         in: header
@@ -51,6 +68,72 @@ paths:
       - description: Auth Token
         in: header
         name: X-Authorization
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Signup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Signup'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Endpoint to update user
+      tags:
+      - Update
+  /user/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint to login user
+      parameters:
+      - description: Client identifier
+        in: header
+        name: X-Client-Id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: Payload
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.LoginResponse'
+      summary: Endpoint to login user
+      tags:
+      - Login
+  /user/v1/register:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint to register user
+      parameters:
+      - description: Client identifier
+        in: header
+        name: X-Client-Id
         required: true
         type: string
       - description: Payload

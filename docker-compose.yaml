@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
 
@@ -9,7 +9,7 @@ services:
           - 6379:6379
   
     api:
-        container_name: make-deals-api
+        container_name: api
         build: '.'
         links:
             - cache:cache
@@ -17,5 +17,29 @@ services:
         ports:
             - 8081:8080
         environment:
+            - TOKEN_SECRET=mySecretJWT
             - CACHE_HOST=cache
-            - SAVE_QUEUE=sqs-lno-queue
+            - DB_HOST=database
+            - DB_USER=user
+            - DB_PASSWORD=pass
+
+    database:
+        image: "mysql:5.7.24"
+        container_name: database
+        command:
+            - "--character-set-server=utf8mb4"
+            - "--collation-server=utf8mb4_unicode_ci"
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: "toor"
+            MYSQL_DATABASE: "auth"
+            MYSQL_USER: "user"
+            MYSQL_PASSWORD: "pass"
+        
+    jaeger:
+        image: jaegertracing/all-in-one:1.22.0
+        container_name: jaeger
+        ports:
+            - "14268:14268"   # jaeger-collector HTTP server (tracer provider)
+            - "16686:16686"   # HTTP server (browser UI)
