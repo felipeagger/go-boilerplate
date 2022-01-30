@@ -14,7 +14,8 @@ func CreateUser(ctx context.Context, payload domain.Signup) error {
 
 	userRepository := repository.NewGORMUserRepository()
 
-	date, _ := time.Parse(time.RFC3339, payload.BirthDate)
+	layOut := "2006/01/02"
+	date, _ := time.Parse(layOut, payload.BirthDate)
 	birthDate := date
 
 	newUser := domain.User{
