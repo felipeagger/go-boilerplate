@@ -12,12 +12,9 @@ import (
 // NewSpan returns a new span from the global tracer. Depending on the `cus`
 // argument, the span is either a plain one or a customised one. Each resulting
 // span must be completed with `defer span.End()` right after the call.
-func NewSpan(ctx context.Context, name string, cus SpanCustomiser) (context.Context, trace.Span) {
-	if cus == nil {
-		return otel.Tracer("").Start(ctx, name)
-	}
+func NewSpan(ctx context.Context, name string) (context.Context, trace.Span) {
 
-	return otel.Tracer("").Start(ctx, name, cus.customise()...)
+	return otel.Tracer("").Start(ctx, name)
 }
 
 // SpanFromContext returns the current span from a context. If you wish to avoid

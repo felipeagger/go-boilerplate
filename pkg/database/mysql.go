@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 
+	gormotel "github.com/wei840222/gorm-otel"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -15,5 +16,11 @@ func NewMySQLConnection(dbHost, dbName, dbUser, dbPass string) (db *gorm.DB, err
 	//db.SetMaxIdleConns(cfg.MaxIdleConns)
 	//db.SetMaxOpenConns(cfg.MaxOpenConns)
 
-	return gorm.Open(mysql.Open(dsn), &gorm.Config{})
+    db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Use(gormotel.New())
+	return db, err
 }

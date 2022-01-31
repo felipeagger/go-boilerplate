@@ -54,7 +54,7 @@ paths:
       summary: Return status of service
       tags:
       - General
-  /user/v1/:userID:
+  /user/v1:
     put:
       consumes:
       - application/json
@@ -145,8 +145,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/domain.Signup'
         "400":

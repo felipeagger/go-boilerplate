@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/felipeagger/go-boilerplate/pkg/trace"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"net/http"
 	"os"
 	"os/signal"
@@ -43,23 +45,24 @@ func main() {
 	log.SetFormatter(&logrus.JSONFormatter{})
 
 	// Bootstrap tracer.
-	//prv, err := trace.NewProvider(trace.ProviderConfig{
-	//	JaegerEndpoint: fmt.Sprintf("http://%s/api/traces", config.GetEnv().TraceHost),
-	//	ServiceName:    "client",
-	//	ServiceVersion: "1.0.0",
-	//	Environment:    "dev",
-	//	Disabled:       false,
-	//})
+	prv, err := trace.NewProvider(trace.ProviderConfig{
+		JaegerEndpoint: fmt.Sprintf("http://%s/api/traces", config.GetEnv().TraceHost),
+		ServiceName:    config.ServiceName,
+		ServiceVersion: "1.0.0",
+		Environment:    config.GetEnv().Env,
+		Disabled:       false,
+	})
 
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	//defer prv.Close(ctx)
+	defer prv.Close(ctx)
 
 	engine := gin.New()
 	engine.Use(cors.Default(),
 		utils.LogMiddleware(log),
+		otelgin.Middleware(config.ServiceName),
 		gin.Recovery(),
 		gzip.Gzip(gzip.DefaultCompression))
 
