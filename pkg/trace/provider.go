@@ -2,15 +2,15 @@ package trace
 
 import (
 	"context"
-
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/trace/jaeger"
 	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/semconv"
 	"go.opentelemetry.io/otel/trace"
 
-	sdkresource "go.opentelemetry.io/otel/sdk/resource"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/sdk/resource"
+	tracesdk "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 )
 
 // ProviderConfig represents the provider configuration and used to create a new
@@ -38,19 +38,21 @@ func NewProvider(config ProviderConfig) (Provider, error) {
 		return Provider{provider: trace.NewNoopTracerProvider()}, nil
 	}
 
-	exp, err := jaeger.NewRawExporter(
-		jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(config.JaegerEndpoint)),
-	)
+	// Create the Jaeger exporter
+	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(config.JaegerEndpoint)))
 	if err != nil {
 		return Provider{}, err
 	}
 
-	prv := sdktrace.NewTracerProvider(
-		sdktrace.WithBatcher(exp),
-		sdktrace.WithResource(sdkresource.NewWithAttributes(
+	prv := tracesdk.NewTracerProvider(
+		// Always be sure to batch in production.
+		tracesdk.WithBatcher(exp),
+		// Record information about this application in a Resource.
+		tracesdk.WithResource(resource.NewWithAttributes(
+			semconv.SchemaURL,
 			semconv.ServiceNameKey.String(config.ServiceName),
 			semconv.ServiceVersionKey.String(config.ServiceVersion),
-			semconv.DeploymentEnvironmentKey.String(config.Environment),
+			attribute.String("environment", config.Environment),
 		)),
 	)
 
@@ -60,7 +62,7 @@ func NewProvider(config ProviderConfig) (Provider, error) {
 		propagation.Baggage{},
 	))
 
-	tracer = struct{ trace.Tracer }{otel.Tracer(config.ServiceName)}
+	//tracer = struct{ trace.Tracer }{otel.Tracer(config.ServiceName)}
 
 	return Provider{provider: prv}, nil
 }
@@ -68,7 +70,7 @@ func NewProvider(config ProviderConfig) (Provider, error) {
 // Close shuts down the tracer provider only if it was not "no operations"
 // version.
 func (p Provider) Close(ctx context.Context) error {
-	if prv, ok := p.provider.(*sdktrace.TracerProvider); ok {
+	if prv, ok := p.provider.(*tracesdk.TracerProvider); ok {
 		return prv.Shutdown(ctx)
 	}
 

@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"errors"
+	"github.com/felipeagger/go-boilerplate/internal/config"
 	"time"
 
 	"github.com/felipeagger/go-boilerplate/internal/domain"
@@ -38,8 +39,15 @@ func SignInUser(ctx context.Context, payload domain.Login) (domain.LoginResponse
 	user := userRepository.GetByEmail(ctx, payload.Email)
 
 	if user.Password == payload.Password {
+		token, err := utils.GenerateJWT(config.GetEnv().TokenSecret, user.ID)
+		if err != nil {
+			return domain.LoginResponse{
+				Message: "error on generate jwt token!",
+			}, errors.New("error on generate token")
+		}
+
 		return domain.LoginResponse{
-			Token:   "jwt",
+			Token:   token,
 			Message: "Success",
 		}, nil
 	}
@@ -47,4 +55,22 @@ func SignInUser(ctx context.Context, payload domain.Login) (domain.LoginResponse
 	return domain.LoginResponse{
 		Message: "Email or Password incorrect!",
 	}, errors.New("Unauthorized")
+}
+
+//UpdateUser ...
+func UpdateUser(ctx context.Context, userID int64, payload domain.Signup) error {
+
+	userRepository := repository.NewGORMUserRepository()
+
+	user := userRepository.Get(ctx, userID)
+
+	if user.ID > 0 {
+		user.Email = payload.Email
+		user.Name = payload.Name
+		user.Password = payload.Password
+
+		return userRepository.Update(ctx, user)
+	}
+
+	return nil
 }

@@ -46,7 +46,7 @@ var doc = `{
                 }
             }
         },
-        "/user/v1/:userID": {
+        "/user/v1": {
             "put": {
                 "description": "Endpoint to update user",
                 "consumes": [
@@ -185,8 +185,8 @@ var doc = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/domain.Signup"
                         }
