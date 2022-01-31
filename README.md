@@ -10,7 +10,8 @@ Responsibility: Register (CRUD) and Login Users with JWT.
 - go-redis
 - GORM
 - MySQL
-- jwt-go
+- OpenTelemetry
+- JWT-Go
 
 ## Documentation (Swagger)
 
