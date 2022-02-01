@@ -32,7 +32,7 @@ definitions:
     - name
     - password
     type: object
-host: localhost:8000
+host: 0.0.0.0:8000
 info:
   contact: {}
   description: This is Example API in Go.

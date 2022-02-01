@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/felipeagger/go-boilerplate/pkg/trace"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/felipeagger/go-boilerplate/pkg/trace"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
@@ -31,7 +32,7 @@ import (
 // @version 1.0
 // @description This is Example API in Go.
 
-// @host localhost:8000
+// @host 0.0.0.0:8000
 // @BasePath /auth
 // @schemes http
 // @query.collection.format multi
@@ -60,7 +61,9 @@ func main() {
 	defer prv.Close(ctx)
 
 	engine := gin.New()
-	engine.Use(cors.Default(),
+
+	engine.Use(
+		cors.Default(),
 		utils.LogMiddleware(log),
 		otelgin.Middleware(config.ServiceName),
 		gin.Recovery(),

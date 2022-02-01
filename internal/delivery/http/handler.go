@@ -4,6 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/felipeagger/go-boilerplate/internal/config"
 	"github.com/felipeagger/go-boilerplate/internal/controller"
 	"github.com/felipeagger/go-boilerplate/internal/domain"
@@ -11,8 +14,6 @@ import (
 	"github.com/felipeagger/go-boilerplate/pkg/trace"
 	"github.com/felipeagger/go-boilerplate/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
 type Handler struct {
@@ -167,7 +168,6 @@ func (h *Handler) Update(c *gin.Context) {
 		trace.FailSpan(span, "Unprocessable Entity")
 		return
 	}
-
 
 	if err := controller.UpdateUser(ctx, userID, payload); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
