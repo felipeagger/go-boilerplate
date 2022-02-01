@@ -1,15 +1,18 @@
 package http
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"github.com/felipeagger/go-boilerplate/internal/config"
-	"github.com/felipeagger/go-boilerplate/pkg/trace"
-	"github.com/felipeagger/go-boilerplate/pkg/utils"
-	"net/http"
-	"strconv"
-
 	"github.com/felipeagger/go-boilerplate/internal/controller"
 	"github.com/felipeagger/go-boilerplate/internal/domain"
+	"github.com/felipeagger/go-boilerplate/pkg/cache"
+	"github.com/felipeagger/go-boilerplate/pkg/trace"
+	"github.com/felipeagger/go-boilerplate/pkg/utils"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 )
 
 type Handler struct {
@@ -149,7 +152,7 @@ func (h *Handler) Update(c *gin.Context) {
 		return
 	}
 
-	userID, err := utils.ValidateJWT(token, config.GetEnv().TokenSecret)
+	userID, err := validateSession(ctx, token)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		trace.AddSpanError(span, err)
@@ -165,8 +168,8 @@ func (h *Handler) Update(c *gin.Context) {
 		return
 	}
 
-	ID, _ := strconv.ParseInt(userID, 10, 64)
-	if err := controller.UpdateUser(ctx, ID, payload); err != nil {
+
+	if err := controller.UpdateUser(ctx, userID, payload); err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		trace.AddSpanError(span, err)
 		trace.FailSpan(span, "Internal Server Error")
@@ -174,4 +177,24 @@ func (h *Handler) Update(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"msg": "Updated"})
+}
+
+func validateSession(ctx context.Context, token string) (int64, error) {
+
+	userID, err := utils.ValidateJWT(token, config.GetEnv().TokenSecret)
+	if err != nil {
+		return 0, err
+	}
+
+	tkn, err := cache.GetCacheClient().Get(ctx, fmt.Sprintf("tkn-%s", userID))
+	if err != nil {
+		return 0, err
+	}
+
+	if tkn != token {
+		return 0, errors.New("invalid token")
+	}
+
+	ID, _ := strconv.ParseInt(userID, 10, 64)
+	return ID, nil
 }

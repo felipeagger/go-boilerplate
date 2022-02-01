@@ -12,10 +12,15 @@ Responsibility: Register (CRUD) and Login Users with JWT.
 - MySQL
 - OpenTelemetry
 - JWT-Go
+- Crypto
 
-## Documentation (Swagger)
+## Documentation & Routes
 
+**Swagger**
 http://localhost:8000/auth/swagger/index.html
+
+**Jaeger UI**
+http://0.0.0.0:16686/search
 
 ## Composition
 
