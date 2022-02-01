@@ -268,7 +268,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "localhost:8000",
+	Host:        "0.0.0.0:8000",
 	BasePath:    "/auth",
 	Schemes:     []string{"http"},
 	Title:       "Go Boilerplate API",

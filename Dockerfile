@@ -7,6 +7,10 @@ ENV GOPATH="$HOME/go"
 
 WORKDIR $GOPATH/src
 
+ADD go.mod go.sum $GOPATH/src/
+
+RUN GOOS=linux go mod download
+
 COPY . $GOPATH/src
 
 RUN GOOS=linux go build -ldflags '-linkmode=external' -o /go/bin/api cmd/api/main.go
