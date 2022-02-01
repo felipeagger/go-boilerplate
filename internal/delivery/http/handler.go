@@ -32,7 +32,6 @@ func NewHandler() Handler {
 // @Router /health-check [get]
 func (h *Handler) HealthCheck(c *gin.Context) {
 
-	c.Header("Access-Control-Allow-Origin", "*")
 	c.JSON(200, gin.H{
 		"message": "Ok",
 	})
