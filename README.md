@@ -19,8 +19,18 @@ Responsibility: Register (CRUD) and Login Users with JWT.
 **Swagger**
 http://localhost:8000/auth/swagger/index.html
 
+![Print of Swagger](/assets/swagger.png)
+
 **Jaeger UI**
 http://0.0.0.0:16686/search
+
+![Print of Jaeger](/assets/trace-redis.png)
+
+_**On Error**_
+![Print of Jaeger](/assets/trace-error.png)
+
+_**SQL**_
+![Print of Jaeger](/assets/trace-sql.png)
 
 ## Composition
 
