@@ -1,5 +1,5 @@
 ## go-boilerplate
-Golang service boilerplate using best practices.
+Golang API Service boilerplate using best practices.
 
 Responsibility: Register (CRUD) and Login Users with JWT.
 
@@ -8,8 +8,8 @@ Responsibility: Register (CRUD) and Login Users with JWT.
 - Gin-Gonic
 - Swaggo
 - go-redis
-- GORM
-- MySQL
+- GORM (MySQL)
+- Snowflake
 - OpenTelemetry
 - JWT-Go
 - Crypto
@@ -32,11 +32,12 @@ _**On Error**_
 _**SQL**_
 ![Print of Jaeger](/assets/trace-sql.png)
 
-## Composition
+## Compose Stack
 
-Pod = 1 Containers
-
-- Container 1 = API REST
+- API REST
+- MySQL
+- Redis
+- Jaeger
 
 ## Execution / Compilation
 
@@ -64,11 +65,11 @@ make test
 
 - _**cmd**_: binaries entrypoint
 - _**internal**_: private packages
-    - _**configs**_: env. vars
-    - _**controller**_: onde fica as regras/logicas
+    - _**configs**_: env. variables
+    - _**controller**_: business logical/rules
     - _**delivery**_: delivery layer -> http, grpc, messaging
     - _**domain**_: models / structs
-    - _**repository**_: operacoes com storage/interface com banco
+    - _**repository**_: storage operations, database interface
     - _**service**_: external services call's
 - _**pkg**_: public packages
 - _**docs**_: Swagger Documentation
