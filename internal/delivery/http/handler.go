@@ -144,22 +144,8 @@ func (h *Handler) Update(c *gin.Context) {
 		return
 	}
 
-	trace.AddSpanTags(span, map[string]string{"app.client_id": clientID})
-
-	token := c.GetHeader("X-Authorization")
-	if token == "" {
-		c.AbortWithStatusJSON(http.StatusForbidden, "X-Authorization not found in headers")
-		trace.FailSpan(span, "Unauthorized")
-		return
-	}
-
-	userID, err := validateSession(ctx, token)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		trace.AddSpanError(span, err)
-		trace.FailSpan(span, "Unauthorized")
-		return
-	}
+	trace.AddSpanTags(span, map[string]string{"app.client_id": clientID, "app.user_id": c.GetHeader("X-User-Id")})
+	userID, _ := strconv.ParseInt(c.GetHeader("X-User-Id"), 10, 64)
 
 	var payload domain.Signup
 	if err := c.ShouldBindJSON(&payload); err != nil {
@@ -177,24 +163,4 @@ func (h *Handler) Update(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"msg": "Updated"})
-}
-
-func validateSession(ctx context.Context, token string) (int64, error) {
-
-	userID, err := utils.ValidateJWT(token, config.GetEnv().TokenSecret)
-	if err != nil {
-		return 0, err
-	}
-
-	tkn, err := cache.GetCacheClient().Get(ctx, fmt.Sprintf("tkn-%s", userID))
-	if err != nil {
-		return 0, err
-	}
-
-	if tkn != token {
-		return 0, errors.New("invalid token")
-	}
-
-	ID, _ := strconv.ParseInt(userID, 10, 64)
-	return ID, nil
 }

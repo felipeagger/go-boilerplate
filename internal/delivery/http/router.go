@@ -11,5 +11,5 @@ func RouterInit(engine *gin.Engine, handlers *Handler) {
 	group.GET("/health-check", handlers.HealthCheck)
 	group.POST("/user/v1/register", handlers.Register)
 	group.POST("/user/v1/login", handlers.Login)
-	group.PUT("/user/v1", handlers.Update)
+	group.PUT("/user/v1", AuthenticationMiddleware(handlers.Update))
 }
