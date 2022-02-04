@@ -1,19 +1,12 @@
 package http
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-	"strconv"
-
-	"github.com/felipeagger/go-boilerplate/internal/config"
 	"github.com/felipeagger/go-boilerplate/internal/controller"
 	"github.com/felipeagger/go-boilerplate/internal/domain"
-	"github.com/felipeagger/go-boilerplate/pkg/cache"
 	"github.com/felipeagger/go-boilerplate/pkg/trace"
-	"github.com/felipeagger/go-boilerplate/pkg/utils"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strconv"
 )
 
 type Handler struct {
