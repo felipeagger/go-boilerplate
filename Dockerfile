@@ -1,8 +1,7 @@
 FROM golang:1.16.1-alpine AS builder
 
-# INSTALL PACKAGES
-RUN apk update && apk add --no-cache musl-dev gcc build-base libc-dev curl git tzdata ca-certificates &&  \
-    update-ca-certificates && echo "America/Sao_Paulo" > /etc/timezone
+RUN apk update && apk add --no-cache musl-dev gcc build-base libc-dev curl git ca-certificates &&  \
+    update-ca-certificates
 
 ENV GOPATH="$HOME/go"
 
@@ -14,17 +13,16 @@ RUN GOOS=linux go mod download
 
 COPY . $GOPATH/src
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/api cmd/api/main.go
+RUN GOOS=linux go build -ldflags '-linkmode=external' -o /go/bin/api cmd/api/main.go
 
-FROM scratch
+FROM alpine:3.14
 
 WORKDIR /app
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
-COPY --from=builder /etc/timezone /etc/timezone
+# UPDATE APK CACHE AND INSTALL PACKAGES | CONFIGURE TIMEZONE | INSTALL AWS DEPS
+RUN apk update && apk upgrade && apk add --no-cache \
+    tzdata ca-certificates && \
+    cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime; echo "America/Sao_Paulo" > /etc/timezone
 
 # Copy our static executable
 COPY --from=builder /go/bin/api .
-
-CMD ["./api"]

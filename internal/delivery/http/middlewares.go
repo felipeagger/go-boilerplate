@@ -27,7 +27,7 @@ func validateSession(ctx context.Context, token string) (string, error) {
 	if tkn != token {
 		return "", errors.New(utils.ErrorInvalidToken)
 	}
-	
+
 	return userID, nil
 }
 

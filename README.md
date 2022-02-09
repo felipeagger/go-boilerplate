@@ -1,7 +1,7 @@
 ## go-boilerplate
-Golang API Service boilerplate using best practices.
+Golang API Service boilerplate using best practices of Clean Architecture.
 
-Responsibility: Register (CRUD) and Login Users with JWT.
+Responsibility: CRUD and Login Users with JWT.
 
 # Dependencies
 
@@ -63,12 +63,13 @@ make test
 
 ## Path's Organization
 
+- _**assets**_: static files
 - _**cmd**_: binaries entrypoint
 - _**internal**_: private packages
     - _**configs**_: env. variables
-    - _**controller**_: business logical/rules
+    - _**usecase**_: business logical/rules
     - _**delivery**_: delivery layer -> http, grpc, messaging
-    - _**domain**_: models / structs
+    - _**entity**_: entities / schemas
     - _**repository**_: storage operations, database interface
     - _**service**_: external services call's
 - _**pkg**_: public packages

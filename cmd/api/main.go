@@ -10,6 +10,12 @@ import (
 	"syscall"
 	"time"
 
+	httpd "github.com/felipeagger/go-boilerplate/internal/delivery/http"
+	"github.com/felipeagger/go-boilerplate/internal/repository"
+	"github.com/felipeagger/go-boilerplate/internal/usecase/user"
+	"github.com/felipeagger/go-boilerplate/pkg/cache"
+	"github.com/felipeagger/go-boilerplate/pkg/database"
+
 	"github.com/felipeagger/go-boilerplate/pkg/trace"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
@@ -22,7 +28,6 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 
 	"github.com/felipeagger/go-boilerplate/internal/config"
-	httpd "github.com/felipeagger/go-boilerplate/internal/delivery/http"
 	"github.com/felipeagger/go-boilerplate/pkg/utils"
 
 	_ "github.com/felipeagger/go-boilerplate/docs"
@@ -37,10 +42,25 @@ import (
 // @schemes http
 // @query.collection.format multi
 
-// @x-extension-openapi {"example": "value on a json format"}
+func init() {
+	cache.InitCacheClientSvc(config.GetEnv().CacheHost, config.GetEnv().CachePort, config.GetEnv().CachePassword)
+}
 
 func main() {
 	ctx := context.Background()
+
+	dbInstance, err := database.NewMySQLConnection(config.GetEnv().DBHost, config.GetEnv().DBName,
+		config.GetEnv().DBUser, config.GetEnv().DBPass)
+	if err != nil {
+		fmt.Println(utils.ErrorDatabaseConn)
+		panic(err)
+	}
+
+	err = repository.Migrate(dbInstance)
+	if err != nil {
+		fmt.Println(utils.ErrorDatabaseMigrate)
+		panic(err)
+	}
 
 	log := logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{})
@@ -62,15 +82,24 @@ func main() {
 
 	engine := gin.New()
 
+	customCors := cors.New(cors.Config{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"*"},
+		AllowHeaders: []string{"*"},
+	})
+
 	engine.Use(
-		cors.Default(),
+		customCors,
 		utils.LogMiddleware(log),
 		otelgin.Middleware(config.ServiceName),
 		gin.Recovery(),
 		gzip.Gzip(gzip.DefaultCompression))
 
-	handler := httpd.NewHandler()
-	httpd.RouterInit(engine, &handler)
+	userRepository := repository.NewGORMUserRepository(dbInstance)
+	userService := user.NewService(userRepository, cache.GetCacheClient())
+
+	handler := httpd.NewHandler(userService)
+	httpd.RouterInit(engine, handler)
 
 	engine.GET("/auth/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

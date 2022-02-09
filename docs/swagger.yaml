@@ -1,6 +1,6 @@
 basePath: /auth
 definitions:
-  domain.Login:
+  entity.Login:
     properties:
       email:
         type: string
@@ -10,14 +10,14 @@ definitions:
     - email
     - password
     type: object
-  domain.LoginResponse:
+  entity.LoginResponse:
     properties:
       message:
         type: string
       token:
         type: string
     type: object
-  domain.Signup:
+  entity.Signup:
     properties:
       birthDate:
         type: string
@@ -55,6 +55,40 @@ paths:
       tags:
       - General
   /user/v1:
+    delete:
+      consumes:
+      - application/json
+      description: Endpoint to delete user
+      parameters:
+      - description: Client identifier
+        in: header
+        name: X-Client-Id
+        required: true
+        type: string
+      - description: Auth Token
+        in: header
+        name: X-Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Endpoint to delete user
+      tags:
+      - Delete
     put:
       consumes:
       - application/json
@@ -75,14 +109,15 @@ paths:
         name: Payload
         required: true
         schema:
-          $ref: '#/definitions/domain.Signup'
+          $ref: '#/definitions/entity.Signup'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Signup'
+            additionalProperties: true
+            type: object
         "400":
           description: Bad Request
           schema:
@@ -110,18 +145,18 @@ paths:
         name: Payload
         required: true
         schema:
-          $ref: '#/definitions/domain.Login'
+          $ref: '#/definitions/entity.Login'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.LoginResponse'
+            $ref: '#/definitions/entity.LoginResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/domain.LoginResponse'
+            $ref: '#/definitions/entity.LoginResponse'
       summary: Endpoint to login user
       tags:
       - Login
@@ -141,14 +176,15 @@ paths:
         name: Payload
         required: true
         schema:
-          $ref: '#/definitions/domain.Signup'
+          $ref: '#/definitions/entity.Signup'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/domain.Signup'
+            additionalProperties: true
+            type: object
         "400":
           description: Bad Request
           schema:
@@ -159,5 +195,3 @@ paths:
 schemes:
 - http
 swagger: "2.0"
-x-extension-openapi:
-  example: value on a json format
