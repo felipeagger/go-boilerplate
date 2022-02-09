@@ -63,6 +63,10 @@ make test
 
 ## Path's Organization
 
+_**Clean Arch**_
+![Clean Representation](/assets/clean-arch.png)
+
+
 - _**assets**_: static files
 - _**cmd**_: binaries entrypoint
 - _**internal**_: private packages
