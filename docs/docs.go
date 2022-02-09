@@ -80,7 +80,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Signup"
+                            "$ref": "#/definitions/entity.Signup"
                         }
                     }
                 ],
@@ -88,7 +88,58 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Signup"
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Endpoint to delete user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Delete"
+                ],
+                "summary": "Endpoint to delete user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client identifier",
+                        "name": "X-Client-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Auth Token",
+                        "name": "X-Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
@@ -133,7 +184,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Login"
+                            "$ref": "#/definitions/entity.Login"
                         }
                     }
                 ],
@@ -141,13 +192,13 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.LoginResponse"
+                            "$ref": "#/definitions/entity.LoginResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/domain.LoginResponse"
+                            "$ref": "#/definitions/entity.LoginResponse"
                         }
                     }
                 }
@@ -180,7 +231,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.Signup"
+                            "$ref": "#/definitions/entity.Signup"
                         }
                     }
                 ],
@@ -188,7 +239,8 @@ var doc = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/domain.Signup"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
@@ -202,7 +254,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "domain.Login": {
+        "entity.Login": {
             "type": "object",
             "required": [
                 "email",
@@ -217,7 +269,7 @@ var doc = `{
                 }
             }
         },
-        "domain.LoginResponse": {
+        "entity.LoginResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -228,7 +280,7 @@ var doc = `{
                 }
             }
         },
-        "domain.Signup": {
+        "entity.Signup": {
             "type": "object",
             "required": [
                 "email",
@@ -250,9 +302,6 @@ var doc = `{
                 }
             }
         }
-    },
-    "x-extension-openapi": {
-        "example": "value on a json format"
     }
 }`
 

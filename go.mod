@@ -5,6 +5,8 @@ go 1.16
 require (
 	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/cespare/xxhash v1.1.0 // indirect
+	github.com/dgraph-io/ristretto v0.1.0
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-contrib/gzip v0.0.3
 	github.com/gin-gonic/gin v1.7.7
@@ -28,5 +30,6 @@ require (
 	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27 // indirect
 	golang.org/x/tools v0.1.9 // indirect
 	gorm.io/driver/mysql v1.2.3
+	gorm.io/driver/sqlite v1.2.6
 	gorm.io/gorm v1.22.5
 )

@@ -24,7 +24,7 @@ type Environment struct {
 	DBUser        string `env:"DB_USER,default=root"`
 	DBPass        string `env:"DB_PASS,default=toor"`
 	TraceHost     string `env:"TRACE_HOST,default=localhost:14268"`
-	TokenSecret   string `env:"TOKEN_SECRET,required=true"`
+	TokenSecret   string `env:"TOKEN_SECRET,default=mySecretJWT"`
 }
 
 func init() {

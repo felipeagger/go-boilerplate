@@ -18,7 +18,7 @@ var (
 func InitCacheClientSvc(cacheHost string, cachePort string, cachePassword string) {
 	onceCache.Do(func() {
 
-		cacheSvc, err := NewCacheService(cacheHost, cachePort, cachePassword)
+		cacheSvc, err := NewCacheService(false, cacheHost, cachePort, cachePassword)
 
 		if err != nil {
 			panic(err)
@@ -81,7 +81,7 @@ func (cache *Client) Expire(ctx context.Context, key string, expiration time.Dur
 	return cache.Client.Expire(ctx, key, expiration).Err()
 }
 
-func (cache *Client) Get(ctx context.Context, key string) (string, error) {
+func (cache *Client) Get(ctx context.Context, key string) (interface{}, error) {
 
 	data, err := cache.Client.Get(ctx, key).Result()
 	if err != nil && err.Error() == "redis: nil" {
@@ -113,9 +113,9 @@ func (cache *Client) Del(ctx context.Context, key string) error {
 	return cache.Client.Del(ctx, key).Err()
 }
 
-func (cache *Client) Pipeline() redis.Pipeliner {
-	return cache.Client.Pipeline()
-}
+//func (cache *Client) Pipeline() redis.Pipeliner {
+//	return cache.Client.Pipeline()
+//}
 
 // NewCacheClient return a new instance of cache client
 func NewRedisClient(hostname, port, password string) (*redis.Client, error) {
