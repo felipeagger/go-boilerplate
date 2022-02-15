@@ -22,6 +22,9 @@ test:
 	@echo "Input Package Name (Ex: pkg/utils)"
 	@read INPUT_PKG; go test -v -race -cover "github.com/felipeagger/go-boilerplate/$$INPUT_PKG"
 
+tests:
+	@go test -v -race -cover -covermode=atomic -coverprofile=coverage.out ./...
+
 release:
 	@if [ "$(v)" == "" ]; then \
 		echo "You need to specify the new release version. Ex: make release v=1.0.0"; \
