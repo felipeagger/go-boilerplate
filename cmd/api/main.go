@@ -56,7 +56,7 @@ func main() {
 		panic(err)
 	}
 
-	err = repository.Migrate(dbInstance)
+	err = repository.DBMigrate(dbInstance, config.GetEnv().DBName)
 	if err != nil {
 		fmt.Println(utils.ErrorDatabaseMigrate)
 		panic(err)
