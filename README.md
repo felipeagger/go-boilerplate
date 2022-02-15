@@ -9,6 +9,7 @@ Responsibility: CRUD and Login Users with JWT.
 - Swaggo
 - go-redis
 - GORM (MySQL)
+- Golang-Migrate
 - Snowflake
 - OpenTelemetry
 - JWT-Go
