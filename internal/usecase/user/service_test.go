@@ -23,7 +23,7 @@ func init()  {
 		panic(err)
 	}
 
-	err = repository.DBMigrate(db, "dbname")
+	err = repository.AutoMigrate(db)
 	if err != nil {
 		fmt.Println(utils.ErrorDatabaseMigrate)
 		panic(err)
