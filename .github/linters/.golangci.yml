@@ -8,9 +8,14 @@ run:
 linters:
   enable-all: true
   disable:
+  - gochecknoinits
   - gochecknoglobals
   - errcheck
   - unused
+  - godot
+  - goimports
+  - whitespace
+  - goerr113
 
 linters-settings:
   misspell:
