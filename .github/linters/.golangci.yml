@@ -1,0 +1,25 @@
+run:
+  deadline: 5m
+  tests: false
+  skip-dirs:
+  - configs
+  - charts
+
+linters:
+  enable-all: true
+  disable:
+  - gochecknoglobals
+  - errcheck
+  - unused
+
+linters-settings:
+  misspell:
+    locale: US
+  lll:
+    line-length: 140
+
+issues:
+  exclude-rules:
+    - text: "weak cryptographic primitive"
+      linters:
+        - gosec
