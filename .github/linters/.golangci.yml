@@ -16,6 +16,8 @@ linters:
   - goimports
   - whitespace
   - goerr113
+  - gofmt
+  - gofumpt
 
 linters-settings:
   misspell:
